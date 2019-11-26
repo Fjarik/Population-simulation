@@ -1,14 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Core.Models.Enums;
+using SharedLibrary.Interfaces.Entity;
+using SharedLibrary.Enums;
 
 namespace Core.Models
 {
 	/// <summary>
 	/// Human or any living entity
 	/// </summary>
-	public class Entity
+	public class Entity : IEntity
 	{
 		/// <summary>
 		/// Gets or sets the gender of the Entity.
@@ -42,6 +43,24 @@ namespace Core.Models
 		/// </value>
 		public int DeathCycle { get; set; }
 
+		/// <summary>
+		/// Gets or sets the generation of the Entity.
+		/// </summary>
+		/// <value>
+		/// The generation.
+		/// </value>
+		public int Generation { get; set; }
+
+		/// <summary>
+		/// Gets or sets the degeneration. (Whenever any of the ancestors had incest)
+		/// (0-1)
+		/// 0 - No degeneration, 1 - Completely degenerated (soon death)
+		/// </summary>
+		/// <value>
+		/// The degeneration value.
+		/// </value>
+		public double Degeneration { get; set; }
+
 #region Modifiers
 
 		/// <summary>
@@ -65,17 +84,6 @@ namespace Core.Models
 		public double Pontency { get; set; } = 0.5;
 
 		/// <summary>
-		/// Gets or sets the degeneration. (Whenever any of the ancestors had incest)
-		/// (0-1)
-		/// 0 - No degeneration, 1 - Completely degenerated (soon death)
-		/// Default value is 0.
-		/// </summary>
-		/// <value>
-		/// The degeneration value.
-		/// </value>
-		public double Degeneration { get; set; } = 0;
-
-		/// <summary>
 		/// Gets or sets the modifier of long age. (0-1)
 		/// Larger number means longer life.
 		/// Default value is 0.5.
@@ -93,7 +101,7 @@ namespace Core.Models
 		/// <value>
 		/// The mother.
 		/// </value>
-		public Entity Mother { get; set; }
+		public IEntity Mother { get; set; }
 
 		/// <summary>
 		/// Gets or sets the father of the Entity.
@@ -101,7 +109,7 @@ namespace Core.Models
 		/// <value>
 		/// The father.
 		/// </value>
-		public Entity Father { get; set; }
+		public IEntity Father { get; set; }
 
 		/// <summary>
 		/// Gets or sets the siblings of the Entity.
@@ -109,7 +117,7 @@ namespace Core.Models
 		/// <value>
 		/// The siblings.
 		/// </value>
-		public List<Entity> Siblings { get; set; }
+		public List<IEntity> Siblings { get; set; }
 
 		/// <summary>
 		/// Gets or sets the partner of the Entity. (Wife or Husband)
@@ -117,7 +125,7 @@ namespace Core.Models
 		/// <value>
 		/// The partner.
 		/// </value>
-		public Entity Partner { get; set; }
+		public IEntity Partner { get; set; }
 
 		/// <summary>
 		/// Gets or sets the children of the Entity.
@@ -125,12 +133,12 @@ namespace Core.Models
 		/// <value>
 		/// The children.
 		/// </value>
-		public List<Entity> Children { get; set; }
+		public List<IEntity> Children { get; set; }
 
 		public Entity()
 		{
-			this.Siblings = new List<Entity>();
-			this.Children = new List<Entity>();
+			this.Siblings = new List<IEntity>();
+			this.Children = new List<IEntity>();
 		}
 	}
 }

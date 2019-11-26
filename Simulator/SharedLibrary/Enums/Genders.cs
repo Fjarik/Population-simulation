@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Core.Models.Enums
+namespace SharedLibrary.Enums
 {
 	/// <summary>
 	/// Genders - Male, Female
