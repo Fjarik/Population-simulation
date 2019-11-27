@@ -11,7 +11,7 @@ Basic simulator of population growth from *X* individuals. (e.g. Planet or islan
 ### Installing
 
  1. Clone repository
- 2. Open the solution ([Simulator/Simulator.sln](Simator/Simulator.sln))
+ 2. Open the solution **/Simulator/Simulator.sln**
  3. Restore NuGet packages
  4. Build the solution
  5. Run the project
@@ -24,10 +24,10 @@ Basic simulator of population growth from *X* individuals. (e.g. Planet or islan
 
 ## Authors
 
-* **Jiøí Falta** - *Main programmer* - [Fjarik](https://github.com/Fjarik)
+* **Jiri Falta** - *Main programmer* - [Fjarik](https://github.com/Fjarik)
 
 See also the list of [contributors](https://github.com/Fjarik/Population-simulator/graphs/contributors) who participated in this project.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

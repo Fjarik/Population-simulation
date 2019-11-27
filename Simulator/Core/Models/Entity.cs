@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using SharedLibrary.Interfaces.Entity;
 using SharedLibrary.Enums;
 
@@ -9,7 +7,7 @@ namespace Core.Models
 	/// <summary>
 	/// Human or any living entity
 	/// </summary>
-	public class Entity : IEntity
+	public sealed class Entity : IEntity
 	{
 		/// <summary>
 		/// Gets or sets the gender of the Entity.
@@ -41,7 +39,7 @@ namespace Core.Models
 		/// <value>
 		/// The death cycle.
 		/// </value>
-		public int DeathCycle { get; set; }
+		public int? DeathCycle { get; set; } = null;
 
 		/// <summary>
 		/// Gets or sets the generation of the Entity.
