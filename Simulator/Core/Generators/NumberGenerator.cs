@@ -35,7 +35,36 @@ namespace Core.Generators
 
 		public int GetRandomInt(int min, int max)
 		{
-			return this.GetRandom().Next(min, max);
+			// max + 1 -> .Next(0,2) generates 0 or 1 but not 2!
+			return this.GetRandom().Next(min, max + 1);
+		}
+
+		public int GetChildrenCount(double fatherPotency, double motherPotency)
+		{
+			var tolerance = 0.05;
+			if (Math.Abs(fatherPotency) < tolerance || Math.Abs(motherPotency) < tolerance) {
+				return 0;
+			}
+			var potency = fatherPotency + motherPotency / 2;
+			return GetChildrenCount(potency);
+		}
+
+		public int GetChildrenCount(double potency)
+		{
+			if (potency < 0.05) {
+				return 0;
+			}
+			var maxCount = 1;
+			if (potency >= 0.15 && potency < 0.35) {
+				maxCount = 2;
+			} else if (potency >= 0.35 && potency < 0.55) {
+				maxCount = 3;
+			} else if (potency >= 0.55 && potency < 0.75) {
+				maxCount = 4;
+			} else if (potency >= 0.75) {
+				maxCount = 5;
+			}
+			return this.GetRandomInt(1, maxCount);
 		}
 
 		private Random GetRandom()

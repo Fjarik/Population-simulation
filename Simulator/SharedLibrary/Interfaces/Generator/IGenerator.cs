@@ -21,6 +21,5 @@ namespace SharedLibrary.Interfaces.Generator
 
 		IEnumerable<T> GetRandomEntities(int count);
 		IEnumerable<T> GetSuperEntities(int count);
-		IEnumerable<T> GetEntities(int count, Func<T, bool> where);
 	}
 }

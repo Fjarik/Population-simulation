@@ -12,5 +12,7 @@ namespace SharedLibrary.Interfaces.Generator
 		int GetRandomInt();
 		int GetRandomInt(int max);
 		int GetRandomInt(int min, int max);
+		int GetChildrenCount(double fatherPotency, double motherPotency);
+		int GetChildrenCount(double potency);
 	}
 }

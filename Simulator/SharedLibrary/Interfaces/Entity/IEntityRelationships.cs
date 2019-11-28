@@ -4,12 +4,12 @@ using System.Text;
 
 namespace SharedLibrary.Interfaces.Entity
 {
-	public interface IEntityRelationships
+	public interface IEntityRelationships<TEntity> where TEntity : IEntity
 	{
-		IEntity Mother { get; set; }
-		IEntity Father { get; set; }
-		List<IEntity> Siblings { get; set; }
-		IEntity Partner { get; set; }
-		List<IEntity> Children { get; set; }
+		TEntity Mother { get; set; }
+		TEntity Father { get; set; }
+		List<TEntity> Siblings { get; set; }
+		TEntity Partner { get; set; }
+		List<TEntity> Children { get; set; }
 	}
 }

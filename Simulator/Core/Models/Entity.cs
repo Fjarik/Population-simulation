@@ -7,7 +7,7 @@ namespace Core.Models
 	/// <summary>
 	/// Human or any living entity
 	/// </summary>
-	public sealed class Entity : IEntity
+	public sealed class Entity : IEntity<Entity>
 	{
 		/// <summary>
 		/// Gets or sets the gender of the Entity.
@@ -16,6 +16,14 @@ namespace Core.Models
 		/// The gender.
 		/// </value>
 		public Genders Gender { get; set; }
+
+		/// <summary>
+		/// Gets or sets the age that was last cycle.
+		/// </summary>
+		/// <value>
+		/// The last age.
+		/// </value>
+		public Ages LastAge { get; set; }
 
 		/// <summary>
 		/// Gets or sets the age of the Entity.
@@ -99,7 +107,7 @@ namespace Core.Models
 		/// <value>
 		/// The mother.
 		/// </value>
-		public IEntity Mother { get; set; }
+		public Entity Mother { get; set; }
 
 		/// <summary>
 		/// Gets or sets the father of the Entity.
@@ -107,7 +115,7 @@ namespace Core.Models
 		/// <value>
 		/// The father.
 		/// </value>
-		public IEntity Father { get; set; }
+		public Entity Father { get; set; }
 
 		/// <summary>
 		/// Gets or sets the siblings of the Entity.
@@ -115,7 +123,7 @@ namespace Core.Models
 		/// <value>
 		/// The siblings.
 		/// </value>
-		public List<IEntity> Siblings { get; set; }
+		public List<Entity> Siblings { get; set; }
 
 		/// <summary>
 		/// Gets or sets the partner of the Entity. (Wife or Husband)
@@ -123,7 +131,7 @@ namespace Core.Models
 		/// <value>
 		/// The partner.
 		/// </value>
-		public IEntity Partner { get; set; }
+		public Entity Partner { get; set; }
 
 		/// <summary>
 		/// Gets or sets the children of the Entity.
@@ -131,12 +139,12 @@ namespace Core.Models
 		/// <value>
 		/// The children.
 		/// </value>
-		public List<IEntity> Children { get; set; }
+		public List<Entity> Children { get; set; }
 
 		public Entity()
 		{
-			this.Siblings = new List<IEntity>();
-			this.Children = new List<IEntity>();
+			this.Siblings = new List<Entity>();
+			this.Children = new List<Entity>();
 		}
 	}
 }
