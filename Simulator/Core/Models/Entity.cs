@@ -10,6 +10,14 @@ namespace Core.Models
 	public sealed class Entity : IEntity<Entity>
 	{
 		/// <summary>
+		/// Gets a value indicating whether this instance is alive.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this instance is alive; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsAlive => this.DeathCycle == null;
+
+		/// <summary>
 		/// Gets or sets the gender of the Entity.
 		/// </summary>
 		/// <value>

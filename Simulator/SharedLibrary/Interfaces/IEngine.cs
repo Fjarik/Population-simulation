@@ -8,8 +8,6 @@ namespace SharedLibrary.Interfaces
 	public interface IEngine<TEntity> where TEntity : class, IEntity
 	{
 		List<TEntity> Entities { get; set; }
-		IEnumerable<TEntity> LivingEntities { get; }
-		IEnumerable<TEntity> SingleLivingEntities { get; }
 
 		int Cycle { get; set; }
 

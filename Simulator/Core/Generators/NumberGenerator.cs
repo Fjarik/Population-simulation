@@ -39,6 +39,11 @@ namespace Core.Generators
 			return this.GetRandom().Next(min, max + 1);
 		}
 
+		public int GetMalesCount(int total)
+		{
+			return Convert.ToInt32(Math.Floor((double) total / 2));
+		}
+
 		public int GetChildrenCount(double fatherPotency, double motherPotency)
 		{
 			var tolerance = 0.05;

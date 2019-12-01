@@ -11,15 +11,15 @@ namespace SharedLibrary.Interfaces.Generator
 	{
 		INumberGenerator NumberGenerator { get; }
 
-		T GetRandomEntity();
+		T GetRandomEntity(Ages? age = null);
 
 		/// <summary>
 		/// Gets the super entity = MAX all modifiers.
 		/// </summary>
 		/// <returns>Returns the Entity</returns>
-		T GetSuperEntity();
+		T GetSuperEntity(Ages? age = null);
 
-		IEnumerable<T> GetRandomEntities(int count);
-		IEnumerable<T> GetSuperEntities(int count);
+		IEnumerable<T> GetRandomEntities(int count, Ages age = Ages.Childhood);
+		IEnumerable<T> GetSuperEntities(int count, Ages age = Ages.Childhood);
 	}
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SharedLibrary;
 using SharedLibrary.Enums;
 using SharedLibrary.Interfaces;
 using SharedLibrary.Interfaces.Entity;
@@ -9,16 +10,12 @@ using SharedLibrary.Interfaces.Generator;
 
 namespace Core
 {
-	public class Engine<TEntity> : IEngine<TEntity> where TEntity : class, IEntity<TEntity>
+	public class Engine<TEntity> : BaseEngine, IEngine<TEntity> where TEntity : class, IEntity<TEntity>
 	{
 		private INumberGenerator NumberGenerator { get; set; }
 		private IEntityGenerator<TEntity> EntityGenerator { get; set; }
 
 		public List<TEntity> Entities { get; set; }
-
-		public IEnumerable<TEntity> LivingEntities => this.Entities.Where(x => x.DeathCycle == null);
-
-		public IEnumerable<TEntity> SingleLivingEntities => this.LivingEntities.Where(x => x.Partner == null);
 
 		public int Cycle { get; set; }
 
@@ -35,7 +32,9 @@ namespace Core
 
 		public void MakeBabies()
 		{
-			throw new NotImplementedException();
+			foreach (var mother in this.Entities.ChildrenMakeableFemales()) {
+				this.MakeBabies(mother);
+			}
 		}
 
 		public void MakeBaby(TEntity parent)
@@ -55,15 +54,20 @@ namespace Core
 			if (mother.Gender != Genders.Female) {
 				throw new InvalidCastException("Mother has wrong gender");
 			}
-			/*var child = new TEntity() {
-				Age = Ages.Childhood,
-				BornCycle = this.Cycle,
-				Father = father,
-				Mother = mother,
-			};
+			var child = this.EntityGenerator.GenerateBaby(father, mother, this.Cycle);
+			this.CheckEntity(child);
 
-			father.Children.Add(child);
-			mother.Children.Add(child);*/
+			// Notify mother children about new sibling
+			foreach (var entity in mother.Children) {
+				entity.Siblings.Add(entity);
+			}
+		}
+
+		public void MakeBabies(TEntity parent)
+		{
+			this.CheckEntity(parent);
+			this.CheckEntity(parent.Partner);
+			this.MakeBabies(parent, parent.Partner);
 		}
 
 		public void MakeBabies(TEntity father, TEntity mother)
@@ -82,7 +86,7 @@ namespace Core
 
 		public void SetPartners()
 		{
-			foreach (var entity in this.SingleLivingEntities.Where(x => x.Age == Ages.Adolescence)) {
+			foreach (var entity in this.Entities.SingleEntities(Ages.Adolescence)) {
 				SetRandomPartner(entity);
 			}
 		}
@@ -96,7 +100,7 @@ namespace Core
 
 		public void GetOlder()
 		{
-			foreach (var entity in LivingEntities) {
+			foreach (var entity in this.Entities.LivingEntities()) {
 				entity.LastAge = entity.Age;
 				switch (entity.Age) {
 					case Ages.Childhood:
@@ -141,18 +145,11 @@ namespace Core
 			this.CheckEntity(original);
 			var minimalAtrac = this.NumberGenerator.GetRandomDouble();
 			if (original.Attractiveness >= minimalAtrac) {
-				return this.SingleLivingEntities
+				return this.Entities.SingleEntities()
 						   .FirstOrDefault(x => x.Gender != original.Gender &&
 												x.Attractiveness >= minimalAtrac);
 			}
 			return null;
-		}
-
-		private void CheckEntity(TEntity entity)
-		{
-			if (entity == null) {
-				throw new ArgumentNullException(nameof(entity));
-			}
 		}
 	}
 }

@@ -19,17 +19,17 @@ namespace Core.Generators
 
 		public INumberGenerator NumberGenerator { get; }
 
-		private IEnumerable<Entity> GetEnumerableEntities()
+		private IEnumerable<Entity> GetEnumerableEntities(Ages age)
 		{
 			while (true) {
-				yield return GetRandomEntity();
+				yield return GetRandomEntity(age);
 			}
 		}
 
-		private IEnumerable<Entity> GetEnumerableSuperEntities()
+		private IEnumerable<Entity> GetEnumerableSuperEntities(Ages age)
 		{
 			while (true) {
-				yield return GetSuperEntity();
+				yield return GetSuperEntity(age);
 			}
 		}
 
@@ -38,10 +38,10 @@ namespace Core.Generators
 			return this.NumberGenerator.GetRandomDouble() > 0.5 ? Genders.Male : Genders.Female;
 		}
 
-		public Entity GetRandomEntity()
+		public Entity GetRandomEntity(Ages? age = null)
 		{
 			return new Entity {
-				Age = Ages.Childhood,
+				Age = age ?? Ages.Childhood,
 				BornCycle = 0,
 				Degeneration = 0,
 				Generation = 0,
@@ -51,9 +51,9 @@ namespace Core.Generators
 			};
 		}
 
-		public Entity GetSuperEntity()
+		public Entity GetSuperEntity(Ages? age = null)
 		{
-			var ent = this.GetRandomEntity();
+			var ent = this.GetRandomEntity(age);
 
 			// Set super modifiers
 			ent.Pontency = 1;
@@ -63,7 +63,7 @@ namespace Core.Generators
 			return ent;
 		}
 
-		private IEnumerable<Entity> GetRandomEnts(Func<IEnumerable<Entity>> func, int count)
+		private IEnumerable<Entity> GetRandomEnts(Func<Ages, IEnumerable<Entity>> func, int count, Ages age)
 		{
 			if (func == null) {
 				throw new ArgumentNullException(nameof(func));
@@ -72,23 +72,23 @@ namespace Core.Generators
 				throw new ArgumentOutOfRangeException(nameof(count));
 			}
 
-			var malesCount = Convert.ToInt32(Math.Floor((double) count / 2));
+			var malesCount = this.NumberGenerator.GetMalesCount(count);
 			var femalesCount = count - malesCount;
 
-			var males = func().Where(x => x.Gender == Genders.Male).Take(malesCount);
-			var females = func().Where(x => x.Gender == Genders.Female).Take(femalesCount);
+			var males = func(age).Where(x => x.Gender == Genders.Male).Take(malesCount);
+			var females = func(age).Where(x => x.Gender == Genders.Female).Take(femalesCount);
 
 			return males.Concat(females);
 		}
 
-		public IEnumerable<Entity> GetRandomEntities(int count)
+		public IEnumerable<Entity> GetRandomEntities(int count, Ages age = Ages.Childhood)
 		{
-			return this.GetRandomEnts(this.GetEnumerableEntities, count);
+			return this.GetRandomEnts(this.GetEnumerableEntities, count, age);
 		}
 
-		public IEnumerable<Entity> GetSuperEntities(int count)
+		public IEnumerable<Entity> GetSuperEntities(int count, Ages age = Ages.Childhood)
 		{
-			return this.GetRandomEnts(this.GetEnumerableSuperEntities, count);
+			return this.GetRandomEnts(this.GetEnumerableSuperEntities, count, age);
 		}
 	}
 }

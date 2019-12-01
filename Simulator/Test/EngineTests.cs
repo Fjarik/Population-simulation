@@ -6,6 +6,7 @@ using Core;
 using Core.Generators;
 using Core.Models;
 using NUnit.Framework;
+using SharedLibrary;
 using SharedLibrary.Enums;
 using SharedLibrary.Interfaces;
 using SharedLibrary.Interfaces.Entity;
@@ -22,7 +23,7 @@ namespace Test
 		public void SetUp()
 		{
 			INumberGenerator numberGen = new NumberGenerator();
-			IEntityGenerator<Entity> entityGenerator; // TODO: Implement
+			IEntityGenerator<Entity> entityGenerator = new EntityGenerator<Entity>();
 			_generator = new StartGenerator(numberGen);
 			_engine = new Engine<Entity>(numberGen, entityGenerator);
 
@@ -35,7 +36,7 @@ namespace Test
 		{
 			Assert.IsNotNull(_engine);
 
-			var original = this._engine.SingleLivingEntities.FirstOrDefault();
+			var original = this._engine.Entities.SingleEntities().FirstOrDefault();
 
 			Assert.IsNotNull(original);
 

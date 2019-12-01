@@ -7,6 +7,6 @@ namespace SharedLibrary.Interfaces.Generator
 {
 	public interface IEntityGenerator<TEntity> where TEntity : class, IEntity
 	{
-		TEntity GenerateBaby(TEntity father, TEntity mother);
+		TEntity GenerateBaby(TEntity father, TEntity mother, int cycle);
 	}
 }
