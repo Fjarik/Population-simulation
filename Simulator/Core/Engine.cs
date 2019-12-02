@@ -16,7 +16,7 @@ namespace Core
 		private IEntityGenerator<TEntity> EntityGenerator { get; set; }
 
 		public List<TEntity> Entities { get; set; }
-
+		public bool IsConfigurated { get; private set; }
 		public int Cycle { get; set; }
 
 		public Engine(INumberGenerator numberGenerator, IEntityGenerator<TEntity> entityGenerator)
@@ -27,12 +27,32 @@ namespace Core
 
 		public void Configurate(List<TEntity> entities)
 		{
+			if (this.IsConfigurated) {
+				throw new ArgumentOutOfRangeException(nameof(this.IsConfigurated),
+													  "Engine is already configurated. Use Reset() first.");
+			}
+
 			this.Entities = entities;
+
+			this.IsConfigurated = true;
+		}
+
+		public void Reset()
+		{
+			if (!this.IsConfigurated) {
+				throw new ArgumentOutOfRangeException(nameof(this.IsConfigurated), "Engine is not configurated");
+			}
+
+			this.Entities.Clear();
+			this.Cycle = 0;
+
+			this.IsConfigurated = false;
 		}
 
 		public void MakeBabies()
 		{
-			foreach (var mother in this.Entities.ChildrenMakeableFemales()) {
+			var availableMothers = this.Entities.ChildrenMakeableFemales().ToList();
+			foreach (var mother in availableMothers) {
 				this.MakeBabies(mother);
 			}
 		}
@@ -57,10 +77,7 @@ namespace Core
 			var child = this.EntityGenerator.GenerateBaby(father, mother, this.Cycle);
 			this.CheckEntity(child);
 
-			// Notify mother children about new sibling
-			foreach (var entity in mother.Children) {
-				entity.Siblings.Add(entity);
-			}
+			this.Entities.Add(child);
 		}
 
 		public void MakeBabies(TEntity parent)
@@ -93,14 +110,20 @@ namespace Core
 
 		public void NextCycle()
 		{
-			this.GetOlder();
+			this.MakeBabies();
 			this.SetPartners();
+			this.GetOlder();
 			this.Cycle++;
 		}
 
 		public void GetOlder()
 		{
 			foreach (var entity in this.Entities.LivingEntities()) {
+				var minimum = this.NumberGenerator.GetRandomDouble(0, 0.9);
+				var shouldGetOlder = (entity.Age == Ages.Adulthood && entity.LastAge == Ages.Adulthood) ||
+									 entity.Age == Ages.Adolescence ||
+									 entity.Longevity <= minimum;
+
 				entity.LastAge = entity.Age;
 				switch (entity.Age) {
 					case Ages.Childhood:
@@ -110,7 +133,9 @@ namespace Core
 						entity.Age = Ages.Adulthood;
 						break;
 					case Ages.Adulthood:
-						entity.Age = Ages.OldAge;
+						if (shouldGetOlder) {
+							entity.Age = Ages.OldAge;
+						}
 						break;
 					case Ages.OldAge:
 						this.Kill(entity);

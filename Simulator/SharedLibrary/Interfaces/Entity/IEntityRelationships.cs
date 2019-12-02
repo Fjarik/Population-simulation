@@ -8,7 +8,7 @@ namespace SharedLibrary.Interfaces.Entity
 	{
 		TEntity Mother { get; set; }
 		TEntity Father { get; set; }
-		List<TEntity> Siblings { get; set; }
+		List<TEntity> Siblings { get; }
 		TEntity Partner { get; set; }
 		List<TEntity> Children { get; set; }
 	}

@@ -18,13 +18,13 @@ namespace SharedLibrary
 		public static IEnumerable<TEntity> MarriedEntities<TEntity>(this IEnumerable<TEntity> query)
 			where TEntity : class, IEntity<TEntity>
 		{
-			return query.LivingEntities().Where(x => x.Partner != null);
+			return query.LivingEntities().Where(x => !x.IsSingle);
 		}
 
 		public static IEnumerable<TEntity> SingleEntities<TEntity>(this IEnumerable<TEntity> query, Ages? age = null)
 			where TEntity : class, IEntity<TEntity>
 		{
-			var res = query.LivingEntities().Where(x => x.Partner != null);
+			var res = query.LivingEntities().Where(x => x.IsSingle);
 			if (age != null) {
 				res = res.Where(x => x.Age == age);
 			}

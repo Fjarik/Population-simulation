@@ -41,6 +41,7 @@ namespace Core.Generators
 		public Entity GetRandomEntity(Ages? age = null)
 		{
 			return new Entity {
+				Id = Guid.NewGuid(),
 				Age = age ?? Ages.Childhood,
 				BornCycle = 0,
 				Degeneration = 0,
@@ -48,6 +49,7 @@ namespace Core.Generators
 				Gender = this.GetRandomGender(),
 				Longevity = this.NumberGenerator.GetDoubleAround(0.5),
 				Pontency = this.NumberGenerator.GetDoubleAround(0.5),
+				Attractiveness = this.NumberGenerator.GetDoubleAround(0.5),
 			};
 		}
 

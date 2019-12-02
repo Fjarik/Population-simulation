@@ -18,6 +18,38 @@ namespace Core.Generators
 			return this.GetRandomDouble() * (max - min) + min;
 		}
 
+		private double GetValidDouble(double value)
+		{
+			if (value < -0.5) {
+				return GetValidDouble(Math.Abs(value));
+			}
+			if (value < 0) {
+				return 0;
+			}
+			if (value > 1) {
+				return 1;
+			}
+			return value;
+		}
+
+		public double CalculateModifier(double mother, double father, double degradation, double mutation = 0.1)
+		{
+			mother = this.GetValidDouble(mother);
+			father = this.GetValidDouble(father);
+			degradation = this.GetValidDouble(degradation);
+			mutation = this.GetValidDouble(mutation);
+
+			var mutationFactor = this.GetRandomDouble(mutation * -1, mutation);
+
+			return (1 - Math.Abs(1 - ((mother + father + mutationFactor) / 2))) * (1 - degradation);
+		}
+
+		public double CalculateDegradation(double mother, double father)
+		{
+			// TODO: Calculate degradation
+			return 0.0;
+		}
+
 		public double GetDoubleAround(double around, double precision = 0.1)
 		{
 			return this.GetRandomDouble(around - precision, around + precision);

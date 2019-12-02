@@ -9,6 +9,8 @@ namespace SharedLibrary.Interfaces.Generator
 		double GetRandomDouble();
 		double GetDoubleAround(double around, double precision = 0.1);
 		double GetRandomDouble(double min, double max);
+		double CalculateModifier(double mother, double father, double degradation, double mutation = 0.1);
+		double CalculateDegradation(double mother, double father);
 		int GetRandomInt();
 		int GetRandomInt(int max);
 		int GetRandomInt(int min, int max);

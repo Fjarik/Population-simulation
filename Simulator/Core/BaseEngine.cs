@@ -12,6 +12,9 @@ namespace Core
 			if (entity == null) {
 				throw new ArgumentNullException(nameof(entity));
 			}
+			if (!entity.IsAlive) {
+				throw new ArgumentOutOfRangeException(nameof(entity), "Entity is dead");
+			}
 		}
 	}
 }

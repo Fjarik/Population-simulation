@@ -8,7 +8,10 @@ namespace SharedLibrary.Interfaces.Entity
 	public interface IEntity : IEntityModifiers
 	{
 		bool IsAlive { get; }
+		bool IsSingle { get; }
+		bool HasChildren { get; }
 
+		Guid Id { get; set; }
 		Genders Gender { get; set; }
 		Ages LastAge { get; set; }
 		Ages Age { get; set; }

@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using SharedLibrary.Interfaces.Entity;
 using SharedLibrary.Enums;
 
@@ -16,6 +18,30 @@ namespace Core.Models
 		///   <c>true</c> if this instance is alive; otherwise, <c>false</c>.
 		/// </value>
 		public bool IsAlive => this.DeathCycle == null;
+
+		/// <summary>
+		/// Gets a value indicating whether Entity is single (does NOT have partner).
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if this Entity is single; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsSingle => this.Partner == null;
+
+		/// <summary>
+		/// Gets a value indicating whether Entity has any child.
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if Entity has children; otherwise, <c>false</c>.
+		/// </value>
+		public bool HasChildren => this.Children.Any();
+
+		/// <summary>
+		/// Gets or sets the unique identifier of the Entity.
+		/// </summary>
+		/// <value>
+		/// The unique identifier.
+		/// </value>
+		public Guid Id { get; set; }
 
 		/// <summary>
 		/// Gets or sets the gender of the Entity.
@@ -126,12 +152,12 @@ namespace Core.Models
 		public Entity Father { get; set; }
 
 		/// <summary>
-		/// Gets or sets the siblings of the Entity.
+		/// Gets the siblings of the Entity.
 		/// </summary>
 		/// <value>
 		/// The siblings.
 		/// </value>
-		public List<Entity> Siblings { get; set; }
+		public List<Entity> Siblings => this.Mother.Children.Where(x => x != this).ToList();
 
 		/// <summary>
 		/// Gets or sets the partner of the Entity. (Wife or Husband)
@@ -151,7 +177,7 @@ namespace Core.Models
 
 		public Entity()
 		{
-			this.Siblings = new List<Entity>();
+			//this.Siblings = new List<Entity>();
 			this.Children = new List<Entity>();
 		}
 	}

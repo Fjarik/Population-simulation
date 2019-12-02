@@ -21,7 +21,7 @@ namespace Test
 		{
 			_numberGenerator = new NumberGenerator();
 			_generator = new StartGenerator(this._numberGenerator);
-			_entGenerator = new EntityGenerator<Entity>();
+			_entGenerator = new EntityGenerator<Entity>(_numberGenerator);
 		}
 
 		[Test]

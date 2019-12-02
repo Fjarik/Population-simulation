@@ -23,7 +23,7 @@ namespace Test
 		public void SetUp()
 		{
 			INumberGenerator numberGen = new NumberGenerator();
-			IEntityGenerator<Entity> entityGenerator = new EntityGenerator<Entity>();
+			IEntityGenerator<Entity> entityGenerator = new EntityGenerator<Entity>(numberGen);
 			_generator = new StartGenerator(numberGen);
 			_engine = new Engine<Entity>(numberGen, entityGenerator);
 
@@ -80,6 +80,32 @@ namespace Test
 			_engine.SetPartners();
 
 			// TODO: Test
+		}
+
+		[Test]
+		public void MakeBabies()
+		{
+			_engine.Reset();
+
+			var ent = _generator.GetSuperEntities(4, Ages.Childhood).ToList();
+			_engine.Configurate(ent);
+
+			_engine.NextCycle();
+
+			Assert.IsTrue(_engine.Entities.All(x => x.Age == Ages.Adolescence));
+			Assert.IsTrue(_engine.Entities.All(x => x.IsSingle));
+			Assert.IsTrue(_engine.Entities.All(x => !x.HasChildren));
+
+			_engine.NextCycle();
+
+			Assert.IsTrue(_engine.Entities.All(x => x.Age == Ages.Adulthood));
+			Assert.IsTrue(_engine.Entities.All(x => !x.IsSingle));
+			Assert.IsTrue(_engine.Entities.All(x => !x.HasChildren));
+
+			_engine.NextCycle();
+
+			Assert.IsTrue(_engine.Entities.MarriedEntities().All(x => x.HasChildren));
+			_engine.NextCycle();
 		}
 	}
 }
