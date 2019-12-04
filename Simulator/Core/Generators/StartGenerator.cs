@@ -12,17 +12,19 @@ namespace Core.Generators
 {
 	public sealed class StartGenerator : IGenerator<Entity>
 	{
-		public StartGenerator(INumberGenerator generator)
+		private IEntityGenerator<Entity> EntityGenerator { get; }
+		public INumberGenerator NumberGenerator { get; }
+
+		public StartGenerator(INumberGenerator generator, IEntityGenerator<Entity> entityGenerator)
 		{
 			this.NumberGenerator = generator;
+			this.EntityGenerator = entityGenerator;
 		}
-
-		public INumberGenerator NumberGenerator { get; }
 
 		private IEnumerable<Entity> GetEnumerableEntities(Ages age)
 		{
 			while (true) {
-				yield return GetRandomEntity(age);
+				yield return this.EntityGenerator.GetRandomEntity(age);
 			}
 		}
 
@@ -33,29 +35,9 @@ namespace Core.Generators
 			}
 		}
 
-		private Genders GetRandomGender()
-		{
-			return this.NumberGenerator.GetRandomDouble() > 0.5 ? Genders.Male : Genders.Female;
-		}
-
-		public Entity GetRandomEntity(Ages? age = null)
-		{
-			return new Entity {
-				Id = Guid.NewGuid(),
-				Age = age ?? Ages.Childhood,
-				BornCycle = 0,
-				Degeneration = 0,
-				Generation = 0,
-				Gender = this.GetRandomGender(),
-				Longevity = this.NumberGenerator.GetDoubleAround(0.5),
-				Pontency = this.NumberGenerator.GetDoubleAround(0.5),
-				Attractiveness = this.NumberGenerator.GetDoubleAround(0.5),
-			};
-		}
-
 		public Entity GetSuperEntity(Ages? age = null)
 		{
-			var ent = this.GetRandomEntity(age);
+			var ent = this.EntityGenerator.GetRandomEntity(age);
 
 			// Set super modifiers
 			ent.Pontency = 1;

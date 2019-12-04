@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using Core.Generators;
 using Core.Models;
+using Core.Services;
 using Moq;
 using NUnit.Framework;
 using SharedLibrary.Enums;
@@ -20,8 +21,9 @@ namespace Test
 		public void Setup()
 		{
 			_numberGenerator = new NumberGenerator();
-			_generator = new StartGenerator(this._numberGenerator);
-			_entGenerator = new EntityGenerator<Entity>(_numberGenerator);
+			var eService = new EntityService<Entity>();
+			_entGenerator = new EntityGenerator<Entity>(_numberGenerator, eService);
+			_generator = new StartGenerator(this._numberGenerator, _entGenerator);
 		}
 
 		[Test]

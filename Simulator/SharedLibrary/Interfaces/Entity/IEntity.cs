@@ -21,5 +21,9 @@ namespace SharedLibrary.Interfaces.Entity
 		double Degeneration { get; set; }
 	}
 
-	public interface IEntity<TEntity> : IEntity, IEntityRelationships<TEntity> where TEntity : class, IEntity { }
+	public interface IEntity<TEntity> : IEntity, IEntityRelationships<TEntity> where TEntity : class, IEntity
+	{
+		List<TEntity> Ancestors { get; }
+		void SetAncestors();
+	}
 }

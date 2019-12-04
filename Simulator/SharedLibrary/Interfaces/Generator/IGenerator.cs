@@ -11,8 +11,6 @@ namespace SharedLibrary.Interfaces.Generator
 	{
 		INumberGenerator NumberGenerator { get; }
 
-		T GetRandomEntity(Ages? age = null);
-
 		/// <summary>
 		/// Gets the super entity = MAX all modifiers.
 		/// </summary>

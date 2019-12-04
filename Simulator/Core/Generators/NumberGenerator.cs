@@ -41,7 +41,11 @@ namespace Core.Generators
 
 			var mutationFactor = this.GetRandomDouble(mutation * -1, mutation);
 
-			return (1 - Math.Abs(1 - ((mother + father + mutationFactor) / 2))) * (1 - degradation);
+			//	   | 2 - ( m + f + k )	|
+			//	(1-|--------------------|) * (1 - d)
+			//	   |		   2		|
+			return (1 - Math.Abs(1 - ((mother + father + mutationFactor) / 2))) *
+				   (1 - degradation);
 		}
 
 		public double CalculateDegradation(double mother, double father)

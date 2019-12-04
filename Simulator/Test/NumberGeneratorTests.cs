@@ -17,24 +17,29 @@ namespace Test
 			_numberGenerator = new NumberGenerator();
 		}
 
-		public void GetRandomDouble()
-		{
-			throw new NotImplementedException();
-		}
-
+		[Test]
+		[TestCase(0.5D, 0.1D)]
 		public void GetDoubleAround(double around, double precision = 0.1)
 		{
-			throw new NotImplementedException();
+			var res = this._numberGenerator.GetDoubleAround(around, precision);
+
+			Assert.IsTrue(res >= around - precision && res <= around + precision);
 		}
 
+		[Test]
+		[TestCase(0D, 10D)]
 		public void GetRandomDouble(double min, double max)
 		{
-			throw new NotImplementedException();
+			var res = this._numberGenerator.GetRandomDouble(min, max);
+
+			Assert.IsTrue(res >= min && res <= max);
 		}
 
 		[Test]
 		[TestCase(1D, 1D, 0D, 1D, 0.1D)]
 		[TestCase(0.5D, 0.5D, 0D, 0.5D, 0.1D)]
+		[TestCase(1D, 1D, 0D, 0.5D, 0.5D)]
+		[TestCase(1D, 1D, 0D, 0.5D, 1D)]
 		[TestCase(1D, 1D, 1D, 0D, 0.1D)]
 		public void CalculateModifier(double mother,
 									  double father,

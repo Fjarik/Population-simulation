@@ -5,6 +5,7 @@ using System.Text;
 using Core;
 using Core.Generators;
 using Core.Models;
+using Core.Services;
 using NUnit.Framework;
 using SharedLibrary;
 using SharedLibrary.Enums;
@@ -22,9 +23,10 @@ namespace Test
 		[SetUp]
 		public void SetUp()
 		{
-			INumberGenerator numberGen = new NumberGenerator();
-			IEntityGenerator<Entity> entityGenerator = new EntityGenerator<Entity>(numberGen);
-			_generator = new StartGenerator(numberGen);
+			var numberGen = new NumberGenerator();
+			var eService = new EntityService<Entity>();
+			IEntityGenerator<Entity> entityGenerator = new EntityGenerator<Entity>(numberGen, eService);
+			_generator = new StartGenerator(numberGen, entityGenerator);
 			_engine = new Engine<Entity>(numberGen, entityGenerator);
 
 			var ent = _generator.GetRandomEntities(7).ToList();

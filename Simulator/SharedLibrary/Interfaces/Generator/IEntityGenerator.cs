@@ -10,5 +10,6 @@ namespace SharedLibrary.Interfaces.Generator
 	{
 		Genders GetRandomGender();
 		TEntity GenerateBaby(TEntity father, TEntity mother, int cycle);
+		TEntity GetRandomEntity(Ages? age = null);
 	}
 }

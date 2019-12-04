@@ -175,10 +175,26 @@ namespace Core.Models
 		/// </value>
 		public List<Entity> Children { get; set; }
 
+		public List<Entity> Ancestors { get; }
+
 		public Entity()
 		{
 			//this.Siblings = new List<Entity>();
 			this.Children = new List<Entity>();
+			this.Ancestors = new List<Entity>();
+		}
+
+		public void SetAncestors()
+		{
+			this.Ancestors.Add(this.Mother);
+			this.Ancestors.Add(this.Father);
+			this.AddAncestors(this.Mother.Ancestors);
+			this.AddAncestors(this.Father.Ancestors);
+		}
+
+		private void AddAncestors(IEnumerable<Entity> motherAncestors)
+		{
+			this.Ancestors.AddRange(motherAncestors.Where(x => this.Ancestors.Any(y => x.Id != y.Id)));
 		}
 	}
 }

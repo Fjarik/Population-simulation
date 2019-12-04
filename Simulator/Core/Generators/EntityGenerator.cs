@@ -5,6 +5,7 @@ using Core.Models;
 using SharedLibrary.Enums;
 using SharedLibrary.Interfaces.Entity;
 using SharedLibrary.Interfaces.Generator;
+using SharedLibrary.Interfaces.Service;
 
 namespace Core.Generators
 {
@@ -12,10 +13,12 @@ namespace Core.Generators
 		where TEntity : class, IEntity<TEntity>, new()
 	{
 		private INumberGenerator NumberGenerator { get; }
+		private IEntityService<TEntity> EntityService { get; }
 
-		public EntityGenerator(INumberGenerator numberGenerator)
+		public EntityGenerator(INumberGenerator numberGenerator, IEntityService<TEntity> entityService)
 		{
 			this.NumberGenerator = numberGenerator;
+			this.EntityService = entityService;
 		}
 
 		public Genders GetRandomGender()
@@ -25,12 +28,16 @@ namespace Core.Generators
 
 		public TEntity GenerateBaby(TEntity father, TEntity mother, int cycle)
 		{
+			var degradation = this.EntityService.GetDegradation(mother, father);
+			return this.GenerateBaby(father, mother, cycle, degradation);
+		}
+
+		private TEntity GenerateBaby(TEntity father, TEntity mother, int cycle, double degradation)
+		{
 			this.CheckEntity(father);
 			this.CheckEntity(mother);
 			this.CheckAge(father);
 			this.CheckAge(mother);
-
-			var degradation = this.NumberGenerator.CalculateDegradation(mother.Degeneration, father.Degeneration);
 
 			var child = new TEntity() {
 				Id = Guid.NewGuid(),
@@ -47,17 +54,27 @@ namespace Core.Generators
 				Degeneration = degradation,
 			};
 
+			child.SetAncestors();
+
 			father.Children.Add(child);
 			mother.Children.Add(child);
 
 			return child;
 		}
 
-		private void CheckAge(TEntity entity)
+		public TEntity GetRandomEntity(Ages? age = null)
 		{
-			if (entity.Age != Ages.Adulthood) {
-				throw new ArgumentOutOfRangeException(nameof(entity), "Entity is not Adult");
-			}
+			return new TEntity {
+				Id = Guid.NewGuid(),
+				Age = age ?? Ages.Childhood,
+				BornCycle = 0,
+				Degeneration = 0,
+				Generation = 0,
+				Gender = this.GetRandomGender(),
+				Longevity = this.NumberGenerator.GetDoubleAround(0.5),
+				Pontency = this.NumberGenerator.GetDoubleAround(0.5),
+				Attractiveness = this.NumberGenerator.GetDoubleAround(0.5),
+			};
 		}
 	}
 }
