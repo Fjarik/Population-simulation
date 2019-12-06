@@ -12,8 +12,8 @@ namespace Core
 {
 	public class Engine<TEntity> : BaseEngine, IEngine<TEntity> where TEntity : class, IEntity<TEntity>
 	{
-		private INumberGenerator NumberGenerator { get; set; }
-		private IEntityGenerator<TEntity> EntityGenerator { get; set; }
+		private INumberGenerator NumberGenerator { get; }
+		private IEntityGenerator<TEntity> EntityGenerator { get; }
 
 		public List<TEntity> Entities { get; set; }
 		public bool IsConfigurated { get; private set; }
@@ -170,8 +170,11 @@ namespace Core
 			this.CheckEntity(original);
 			var minimalAtrac = this.NumberGenerator.GetRandomDouble();
 			if (original.Attractiveness >= minimalAtrac) {
-				return this.Entities.SingleEntities()
-						   .FirstOrDefault(x => x.Gender != original.Gender &&
+				return this.Entities
+						   .SingleEntities()
+						   .FirstOrDefault(x => x.Generation == original.Generation &&
+												x.Age == original.Age &&
+												x.Gender != original.Gender &&
 												x.Attractiveness >= minimalAtrac);
 			}
 			return null;

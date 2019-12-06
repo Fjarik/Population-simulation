@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using MoreLinq;
+using SharedLibrary;
 using SharedLibrary.Interfaces.Entity;
 using SharedLibrary.Enums;
 
@@ -34,6 +36,16 @@ namespace Core.Models
 		///   <c>true</c> if Entity has children; otherwise, <c>false</c>.
 		/// </value>
 		public bool HasChildren => this.Children.Any();
+
+		/// <summary>
+		/// Gets a value indicating whenther Entity is able to make child
+		/// </summary>
+		/// <value>
+		///   <c>true</c> if Entity is able to make children; otherwise, <c>false</c>.
+		/// </value>
+		public bool IsAbleToMakeChildren => !this.IsSingle &&
+											this.Partner.IsAlive &&
+											this.Age.ChildrenMakeableAge(this.Gender);
 
 		/// <summary>
 		/// Gets or sets the unique identifier of the Entity.
@@ -157,7 +169,8 @@ namespace Core.Models
 		/// <value>
 		/// The siblings.
 		/// </value>
-		public List<Entity> Siblings => this.Mother.Children.Where(x => x != this).ToList();
+		public List<Entity> Siblings =>
+			this.Mother?.Children?.Where(x => x.Id != this.Id).ToList() ?? new List<Entity>();
 
 		/// <summary>
 		/// Gets or sets the partner of the Entity. (Wife or Husband)
@@ -175,7 +188,7 @@ namespace Core.Models
 		/// </value>
 		public List<Entity> Children { get; set; }
 
-		public List<Entity> Ancestors { get; }
+		public List<Entity> Ancestors { get; private set; }
 
 		public Entity()
 		{
@@ -190,6 +203,8 @@ namespace Core.Models
 			this.Ancestors.Add(this.Father);
 			this.AddAncestors(this.Mother.Ancestors);
 			this.AddAncestors(this.Father.Ancestors);
+
+			this.Ancestors = this.Ancestors.DistinctBy(x => x.Id).ToList();
 		}
 
 		private void AddAncestors(IEnumerable<Entity> motherAncestors)

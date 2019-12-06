@@ -23,6 +23,7 @@ namespace SharedLibrary.Interfaces.Entity
 
 	public interface IEntity<TEntity> : IEntity, IEntityRelationships<TEntity> where TEntity : class, IEntity
 	{
+		bool IsAbleToMakeChildren { get; }
 		List<TEntity> Ancestors { get; }
 		void SetAncestors();
 	}

@@ -18,10 +18,14 @@ namespace Core
 			}
 		}
 
-		protected void CheckAge(IEntity entity)
+		protected void CheckAge(IEntity entity, bool allowOlder = false)
 		{
-			if (entity.Age != Ages.Adulthood) {
-				throw new ArgumentOutOfRangeException(nameof(entity), "Entity is not Adult");
+			switch (entity.Age) {
+				case Ages.Adulthood:
+				case Ages.OldAge when allowOlder:
+					return;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(entity), "Entity is not Adult");
 			}
 		}
 

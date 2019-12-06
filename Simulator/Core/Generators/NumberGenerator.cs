@@ -66,11 +66,22 @@ namespace Core.Generators
 
 		public int GetRandomInt(int max)
 		{
+			if (max < 0) {
+				throw new ArgumentOutOfRangeException(nameof(max), "Value must be greater than 0.");
+			}
+
 			return this.GetRandom().Next(max);
 		}
 
 		public int GetRandomInt(int min, int max)
 		{
+			if (max < 0) {
+				throw new ArgumentOutOfRangeException(nameof(max), "Value must be greater than 0.");
+			}
+			if (max < min) {
+				throw new ArgumentOutOfRangeException(nameof(min), "Maximal value must be greater than minimal.");
+			}
+
 			// max + 1 -> .Next(0,2) generates 0 or 1 but not 2!
 			return this.GetRandom().Next(min, max + 1);
 		}

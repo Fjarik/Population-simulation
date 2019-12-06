@@ -52,24 +52,32 @@ namespace Test
 			Assert.IsTrue((expected - mutation) <= res);
 		}
 
-		public void CalculateDegradation(double mother, double father)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void GetRandomInt()
-		{
-			throw new NotImplementedException();
-		}
-
+		[Test]
+		[TestCase(0)]
+		[TestCase(1)]
+		[TestCase(10)]
+		[TestCase(1000)]
 		public void GetRandomInt(int max)
 		{
-			throw new NotImplementedException();
+			Assert.GreaterOrEqual(max, 0);
+
+			var res = this._numberGenerator.GetRandomInt(max);
+
+			Assert.LessOrEqual(res, max);
 		}
 
+		[Test]
+		[TestCase(0, 1)]
+		[TestCase(0, 10)]
+		[TestCase(20, 100)]
 		public void GetRandomInt(int min, int max)
 		{
-			throw new NotImplementedException();
+			Assert.GreaterOrEqual(max, 0);
+			Assert.IsTrue(min < max);
+
+			var res = this._numberGenerator.GetRandomInt(min, max);
+
+			Assert.IsTrue(min <= res && res <= max);
 		}
 
 		public void GetMalesCount(int total)
@@ -78,11 +86,6 @@ namespace Test
 		}
 
 		public void GetChildrenCount(double fatherPotency, double motherPotency)
-		{
-			throw new NotImplementedException();
-		}
-
-		public void GetChildrenCount(double potency)
 		{
 			throw new NotImplementedException();
 		}

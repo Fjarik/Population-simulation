@@ -36,7 +36,9 @@ namespace Core.Generators
 		{
 			this.CheckEntity(father);
 			this.CheckEntity(mother);
-			this.CheckAge(father);
+			// Father can be older than mother.
+			// (Males are potent to the end of their lifes)
+			this.CheckAge(father, true);
 			this.CheckAge(mother);
 
 			var child = new TEntity() {

@@ -34,8 +34,9 @@ namespace SharedLibrary
 		public static IEnumerable<TEntity> ChildrenMakeableEntities<TEntity>(this IEnumerable<TEntity> query)
 			where TEntity : class, IEntity<TEntity>
 		{
-			return query.MarriedEntities().Where(x => x.Partner.IsAlive &&
-													  x.Age == Ages.Adulthood);
+			return query.MarriedEntities()
+						.Where(x => x.Partner.IsAlive &&
+									x.Age.ChildrenMakeableAge(x.Gender));
 		}
 
 		public static IEnumerable<TEntity> ChildrenMakeableFemales<TEntity>(this IEnumerable<TEntity> query)

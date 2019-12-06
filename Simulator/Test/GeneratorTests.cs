@@ -34,8 +34,6 @@ namespace Test
 			var count = 11;
 
 			var entites = this._generator.GetRandomEntities(count).ToList();
-			var first = entites.Last();
-
 
 			Assert.AreEqual(count, entites.Count);
 
@@ -47,6 +45,10 @@ namespace Test
 
 			Assert.AreEqual(expectedMaleCount, males.Count());
 			Assert.AreEqual(expectedFemaleCount, females.Count());
+
+			Assert.IsTrue(entites.All(x => !x.Ancestors.Any()));
+
+			var first = entites.Last();
 
 			Assert.IsNotNull(first);
 
@@ -67,11 +69,9 @@ namespace Test
 		{
 			Assert.IsNotNull(_generator);
 
-			var count = 10;
+			var count = 13;
 
 			var entites = this._generator.GetSuperEntities(count).ToList();
-			var first = entites.Last();
-
 
 			Assert.AreEqual(count, entites.Count);
 
@@ -83,6 +83,10 @@ namespace Test
 
 			Assert.AreEqual(expectedMaleCount, males.Count());
 			Assert.AreEqual(expectedFemaleCount, females.Count());
+
+			Assert.IsTrue(entites.All(x => !x.Ancestors.Any()));
+
+			var first = entites.Last();
 
 			Assert.IsNotNull(first);
 
@@ -101,35 +105,32 @@ namespace Test
 		}
 
 		[Test]
-		public void GenderCountGeneratorTest()
+		[TestCase(10, 5)]
+		[TestCase(11, 5)]
+		[TestCase(12, 6)]
+		[TestCase(100, 50)]
+		[TestCase(101, 50)]
+		public void GenderCountGeneratorTest(int total, int expectedMales)
 		{
 			Assert.IsNotNull(_numberGenerator);
 
-			var total = 10;
+			var expectedFemales = total - expectedMales;
 
 			var males = _numberGenerator.GetMalesCount(total);
 			var females = total - males;
 
-			Assert.AreEqual(5, males);
-			Assert.AreEqual(5, females);
-
-			total = 11;
-
-			males = _numberGenerator.GetMalesCount(total);
-			females = total - males;
-
-			Assert.AreEqual(5, males);
-			Assert.AreEqual(6, females);
+			Assert.AreEqual(expectedMales, males);
+			Assert.AreEqual(expectedFemales, females);
 		}
 
 		[Test]
-		public void GenerateBaby()
+		[TestCase(2, 1)]
+		[TestCase(4, 1)]
+		[TestCase(4, 2)]
+		public void GenerateBaby(int count, int cycle)
 		{
 			Assert.IsNotNull(_generator);
 			Assert.IsNotNull(_entGenerator);
-
-			var count = 2;
-			var cycle = 1;
 
 			Assert.GreaterOrEqual(count, 2);
 
@@ -161,6 +162,9 @@ namespace Test
 
 			Assert.AreEqual(mother, baby.Mother);
 			Assert.AreEqual(father, baby.Father);
+
+			Assert.Contains(mother, baby.Ancestors);
+			Assert.Contains(father, baby.Ancestors);
 		}
 	}
 }

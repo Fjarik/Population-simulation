@@ -32,7 +32,7 @@ namespace Core.Services
 				return this.AreConnected(ancestor, current);
 			}
 
-			return current.Ancestors.Any(x => x.Id == ancestor.Id);
+			return current.Ancestors.Any(x => x.Id == ancestor.Id || ancestor.Ancestors.Any(y => x.Id == y.Id));
 		}
 
 		public IEnumerable<TEntity> GetLowestCommonAncestors(TEntity one, TEntity two)

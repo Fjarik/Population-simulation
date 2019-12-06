@@ -19,13 +19,15 @@ namespace Test
 	{
 		private IEngine<Entity> _engine;
 		private IGenerator<Entity> _generator;
+		private EntityService<Entity> _entityService;
 
 		[SetUp]
 		public void SetUp()
 		{
 			var numberGen = new NumberGenerator();
-			var eService = new EntityService<Entity>();
-			IEntityGenerator<Entity> entityGenerator = new EntityGenerator<Entity>(numberGen, eService);
+			_entityService = new EntityService<Entity>();
+
+			IEntityGenerator<Entity> entityGenerator = new EntityGenerator<Entity>(numberGen, _entityService);
 			_generator = new StartGenerator(numberGen, entityGenerator);
 			_engine = new Engine<Entity>(numberGen, entityGenerator);
 
@@ -108,6 +110,68 @@ namespace Test
 
 			Assert.IsTrue(_engine.Entities.MarriedEntities().All(x => x.HasChildren));
 			_engine.NextCycle();
+		}
+
+		[Test]
+		public void ServiceTest()
+		{
+			var cycles = 10;
+			for (int i = 0; i < cycles; i++) {
+				_engine.NextCycle();
+			}
+
+			var last = _engine.Entities.Last();
+
+			var firstAncestor = _entityService.GetFirstAncestor(last, Genders.Male);
+
+			Assert.IsNotNull(firstAncestor);
+
+			var siblings = _engine.Entities.LivingEntities().FirstOrDefault(x => x.Siblings.Any())?.Siblings;
+
+			Assert.IsNotNull(siblings);
+			Assert.IsTrue(siblings.Any());
+
+			var areSibling = _entityService.AreSiblings(siblings.First(), siblings.Last());
+
+			Assert.IsTrue(areSibling);
+		}
+
+		[Test]
+		public void MultipleNextTest()
+		{
+			var count = 10;
+			for (int i = 0; i < count; i++) {
+				var cycles = 10;
+
+				_engine.Reset();
+				var ent = _generator.GetSuperEntities(5, Ages.Childhood).ToList();
+				_engine.Configurate(ent);
+
+				for (int j = 0; j < cycles; j++) {
+					_engine.NextCycle();
+				}
+
+				var entCount = _engine.Entities.Count;
+				Console.WriteLine($"Try no. {i + 1}, after {cycles} cycles - Entities count: {entCount}");
+			}
+
+			Assert.IsTrue(true);
+		}
+
+		[Test]
+		public void NextTest()
+		{
+			var cycles = 10;
+
+			_engine.Reset();
+			var ent = _generator.GetSuperEntities(5, Ages.Childhood).ToList();
+			_engine.Configurate(ent);
+
+			for (int i = 0; i < cycles; i++) {
+				_engine.NextCycle();
+				var entCount = _engine.Entities.Count;
+				Console.WriteLine($"Cycle no. {i + 1}, Entities count: {entCount}");
+			}
 		}
 	}
 }
