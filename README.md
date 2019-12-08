@@ -19,10 +19,13 @@ Basic simulator of population growth from *X* individuals. (e.g. Planet or islan
 ## Basics
 
 ### Entity
+*To-Do*
 
 ### Gender(s)
+*To-Do*
 
 ### Age(s)
+*To-Do*
 
 ### Cycles
 
@@ -42,40 +45,39 @@ Every entity which meets the conditions, can "create" new entity.
 ##### Required conditions
 
 **Parents**
-    - [ ] - Are alive
-    - [ ] - Are different gender (Male + Female)
-    - [ ] - Are same generation (*Configurable*)
-    - [ ] - Are **NOT** related (*Configurable*)
+- [ ] Are alive
+- [ ] Are different gender (Male + Female)
+- [ ] Are same generation (*Configurable*)
+- [ ] Are **NOT** related (*Configurable*)
 
 **Mother**
-    - [ ] - Is female
-    - [ ] - Has partner
-    - [ ] - Partner is alive
-    - [ ] - Partner is male
-    - [ ] - Is **adult**
+- [ ] Is female
+- [ ] Has partner
+- [ ] Partner is alive
+- [ ] Partner is male
+- [ ] Is **adult**
 
 **Father**
-    - [ ] - Is male
-    - [ ] - Has partner
-    - [ ] - Partner is alive
-    - [ ] - Partner is female
-    - [ ] - Is **Adult** or is **OldAge**
+- [ ] Is male
+- [ ] Has partner
+- [ ] Partner is alive
+- [ ] Partner is female
+- [ ] Is **Adult** or is **OldAge**
 
 ##### Rules
 *To-Do*
-
 
 #### 2. phase - Set partner
 
 A random number between 0 and 1 is generated. (= Minimal attractiveness) 
 ##### Rules
-    - [ ] - Is alive
-    - [ ] - Is single (Does **NOT** have partner)
-    - [ ] - Is teen (Adolescence age)
-    - [ ] - Is same generation as *future* partner
-    - [ ] - Is same age as partner
-    - [ ] - Is different gender of partner
-    - [ ] - Has greater or same atractiveness than minimal attractiveness
+- [ ] Is alive
+- [ ] Is single (Does **NOT** have partner)
+- [ ] Is teen (Adolescence age)
+- [ ] Is same generation as *future* partner
+- [ ] Is same age as partner
+- [ ] Is different gender of partner
+- [ ] Has greater or same atractiveness than minimal attractiveness
 
 #### 3. phase - Get old
 In *Get old* phase each entity is changed by basic rules.
