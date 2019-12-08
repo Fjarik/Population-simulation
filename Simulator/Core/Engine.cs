@@ -18,13 +18,18 @@ namespace Core
 		private IEntityGenerator<TEntity> EntityGenerator { get; }
 
 		public List<TEntity> Entities { get; set; }
+		public IDictionary<SettingKeys, object> Settings { get; private set; }
 		public bool IsConfigurated { get; private set; }
 		public int Cycle { get; set; }
+
+		public bool CanContinue => this.Entities.LivingEntities().Any();
 
 		public Engine(INumberGenerator numberGenerator, IEntityGenerator<TEntity> entityGenerator)
 		{
 			this.NumberGenerator = numberGenerator;
 			this.EntityGenerator = entityGenerator;
+			this.Entities = new List<TEntity>();
+			this.Settings = new Dictionary<SettingKeys, object>();
 		}
 
 		public void Configurate(List<TEntity> entities)
@@ -36,6 +41,11 @@ namespace Core
 
 			this.Entities = entities;
 
+			this.Settings.Add(SettingKeys.AllowIncest, true);
+			this.Settings.Add(SettingKeys.MinRelationDegree, 1);
+			this.Settings.Add(SettingKeys.SameGenerationOnly, true);
+			this.Settings.Add(SettingKeys.RandomDeaths, true);
+
 			this.IsConfigurated = true;
 		}
 
@@ -46,6 +56,7 @@ namespace Core
 			}
 
 			this.Entities.Clear();
+			this.Settings.Clear();
 			this.Cycle = 0;
 
 			this.IsConfigurated = false;
@@ -108,6 +119,10 @@ namespace Core
 
 		public ICycleStatistics NextCycle()
 		{
+			if (!this.CanContinue) {
+				return new CycleStatistics();
+			}
+
 			var births = this.MakeBabies();
 			var relations = this.SetPartners();
 			var ageStats = this.GetOlder();
@@ -131,8 +146,11 @@ namespace Core
 				entity.LastAge = entity.Age;
 				switch (entity.Age) {
 					case Ages.Childhood:
-						entity.Age = Ages.Adolescence;
-						newTeens++;
+						if (entity.BornCycle != this.Cycle) {
+							// NOT just born
+							entity.Age = Ages.Adolescence;
+							newTeens++;
+						}
 						break;
 					case Ages.Adolescence:
 						entity.Age = Ages.Adulthood;

@@ -9,5 +9,6 @@ namespace SharedLibrary.Interfaces.Statistics
 		int Births { get; }
 		int NewRelationships { get; }
 		IAgingStatistics AgingStats { get; }
+		bool CanContinue { get; }
 	}
 }

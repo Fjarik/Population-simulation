@@ -42,24 +42,24 @@ Every entity which meets the conditions, can "create" new entity.
 ##### Required conditions
 
 **Parents**
-    [ ] - Are alive
-    [ ] - Are different gender (Male + Female)
-    [ ] - Are same generation (*Configurable*)
-    [ ] - Are **NOT** related (*Configurable*)
+    - [ ] - Are alive
+    - [ ] - Are different gender (Male + Female)
+    - [ ] - Are same generation (*Configurable*)
+    - [ ] - Are **NOT** related (*Configurable*)
 
 **Mother**
-    [ ] - Is female
-    [ ] - Has partner
-    [ ] - Partner is alive
-    [ ] - Partner is male
-    [ ] - Is **adult**
+    - [ ] - Is female
+    - [ ] - Has partner
+    - [ ] - Partner is alive
+    - [ ] - Partner is male
+    - [ ] - Is **adult**
 
 **Father**
-    [ ] - Is male
-    [ ] - Has partner
-    [ ] - Partner is alive
-    [ ] - Partner is female
-    [ ] - Is **Adult** or is **OldAge**
+    - [ ] - Is male
+    - [ ] - Has partner
+    - [ ] - Partner is alive
+    - [ ] - Partner is female
+    - [ ] - Is **Adult** or is **OldAge**
 
 ##### Rules
 *To-Do*
@@ -69,13 +69,13 @@ Every entity which meets the conditions, can "create" new entity.
 
 A random number between 0 and 1 is generated. (= Minimal attractiveness) 
 ##### Rules
-    [ ] - Is alive
-    [ ] - Is single (Does **NOT** have partner)
-    [ ] - Is teen (Adolescence age)
-    [ ] - Is same generation as *future* partner
-    [ ] - Is same age as partner
-    [ ] - Is different gender of partner
-    [ ] - Has greater or same atractiveness than minimal attractiveness
+    - [ ] - Is alive
+    - [ ] - Is single (Does **NOT** have partner)
+    - [ ] - Is teen (Adolescence age)
+    - [ ] - Is same generation as *future* partner
+    - [ ] - Is same age as partner
+    - [ ] - Is different gender of partner
+    - [ ] - Has greater or same atractiveness than minimal attractiveness
 
 #### 3. phase - Get old
 In *Get old* phase each entity is changed by basic rules.
@@ -97,13 +97,13 @@ If everything was alright, the current cycle number is increased.
 
 ## Built With
 
-* [Visual Studio 2017](https://visualstudio.microsoft.com/) - IDE
-* [NuGet](https://www.nuget.org/) - Package manager
-* [C#](https://docs.microsoft.com/dotnet/csharp/) - Programming language
+- [Visual Studio 2017](https://visualstudio.microsoft.com/) - IDE
+- [NuGet](https://www.nuget.org/) - Package manager
+- [C#](https://docs.microsoft.com/dotnet/csharp/) - Programming language
 
 ## Authors
 
-* **Jiri Falta** - *Main programmer* - [Fjarik](https://github.com/Fjarik)
+- **Jiri Falta** - *Main programmer* - [Fjarik](https://github.com/Fjarik)
 
 See also the list of [contributors](https://github.com/Fjarik/Population-simulator/graphs/contributors) who participated in this project.
 

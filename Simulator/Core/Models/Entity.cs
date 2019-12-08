@@ -69,7 +69,7 @@ namespace Core.Models
 		/// <value>
 		/// The last age.
 		/// </value>
-		public Ages LastAge { get; set; }
+		public Ages? LastAge { get; set; }
 
 		/// <summary>
 		/// Gets or sets the age of the Entity.

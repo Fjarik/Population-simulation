@@ -146,7 +146,7 @@ namespace Test
 		{
 			var count = 10;
 			for (int i = 0; i < count; i++) {
-				var cycles = 10;
+				var cycles = 20;
 
 				_engine.Reset();
 				var ent = _generator.GetSuperEntities(5, Ages.Childhood).ToList();
@@ -157,20 +157,21 @@ namespace Test
 				}
 
 				var entCount = _engine.Entities.Count;
-				Console.WriteLine($"Try no. {i + 1}, after {cycles} cycles - Entities count: {entCount}");
+				var aliveCount = _engine.Entities.LivingEntities().Count();
+				Console.WriteLine($"Try no. {i + 1}, after {cycles} cycles - Entities count: {entCount} (Alive: {aliveCount})");
 			}
 
 			Assert.IsTrue(true);
 		}
 
 		[Test]
-		[TestCase(5)]
-		[TestCase(4)]
-		[TestCase(3)]
 		[TestCase(2)]
+		[TestCase(3)]
+		[TestCase(4)]
+		[TestCase(5)]
 		public void NextTest(int startCount)
 		{
-			var cycles = 10;
+			var cycles = 50;
 
 			_engine.Reset();
 			var ent = _generator.GetSuperEntities(startCount, Ages.Childhood).ToList();
@@ -180,8 +181,14 @@ namespace Test
 				Assert.AreEqual(i, _engine.Cycle);
 
 				var stats = _engine.NextCycle();
+				if (!stats.CanContinue) {
+					Console.WriteLine("Cannot continue");
+					break;
+				}
+
 				var entCount = _engine.Entities.Count;
-				Console.WriteLine($"Cycle no. {_engine.Cycle}, Entities count: {entCount}");
+				var aliveCount = _engine.Entities.LivingEntities().Count();
+				Console.WriteLine($"Cycle no. {_engine.Cycle}, Entities count: {entCount} (Alive: {aliveCount})");
 				Console.WriteLine($"	Births:	{stats.Births}");
 				Console.WriteLine($"	New relationships: {stats.NewRelationships}");
 				Console.WriteLine($"	New teens: {stats.AgingStats.NewTeens}");

@@ -10,12 +10,19 @@ namespace Core.Models
 		public int Births { get; }
 		public int NewRelationships { get; }
 		public IAgingStatistics AgingStats { get; }
+		public bool CanContinue { get; }
 
-		public CycleStatistics(int births, int newRelationships, IAgingStatistics agingStats)
+		public CycleStatistics(int births, int newRelationships, IAgingStatistics agingStats, bool canContinue = true) :
+			this(canContinue)
 		{
 			this.Births = births;
 			this.NewRelationships = newRelationships;
 			this.AgingStats = agingStats;
+		}
+
+		public CycleStatistics(bool canContinue = false)
+		{
+			this.CanContinue = canContinue;
 		}
 	}
 }

@@ -13,7 +13,7 @@ namespace SharedLibrary.Interfaces.Entity
 
 		Guid Id { get; set; }
 		Genders Gender { get; set; }
-		Ages LastAge { get; set; }
+		Ages? LastAge { get; set; }
 		Ages Age { get; set; }
 		int BornCycle { get; set; }
 		int? DeathCycle { get; set; }

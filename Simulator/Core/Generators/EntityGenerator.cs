@@ -54,6 +54,7 @@ namespace Core.Generators
 				Longevity = this.NumberGenerator.CalculateModifier(mother.Longevity, father.Longevity, degradation),
 				Pontency = this.NumberGenerator.CalculateModifier(mother.Pontency, father.Pontency, degradation),
 				Degeneration = degradation,
+				LastAge = null,
 			};
 
 			child.SetAncestors();
