@@ -115,6 +115,11 @@ namespace Test
 		[Test]
 		public void ServiceTest()
 		{
+			_engine.Reset();
+
+			var ent = _generator.GetRandomEntities(7).ToList();
+			_engine.Configurate(ent);
+
 			var cycles = 10;
 			for (int i = 0; i < cycles; i++) {
 				_engine.NextCycle();
@@ -159,18 +164,30 @@ namespace Test
 		}
 
 		[Test]
-		public void NextTest()
+		[TestCase(5)]
+		[TestCase(4)]
+		[TestCase(3)]
+		[TestCase(2)]
+		public void NextTest(int startCount)
 		{
 			var cycles = 10;
 
 			_engine.Reset();
-			var ent = _generator.GetSuperEntities(5, Ages.Childhood).ToList();
+			var ent = _generator.GetSuperEntities(startCount, Ages.Childhood).ToList();
 			_engine.Configurate(ent);
 
 			for (int i = 0; i < cycles; i++) {
-				_engine.NextCycle();
+				Assert.AreEqual(i, _engine.Cycle);
+
+				var stats = _engine.NextCycle();
 				var entCount = _engine.Entities.Count;
-				Console.WriteLine($"Cycle no. {i + 1}, Entities count: {entCount}");
+				Console.WriteLine($"Cycle no. {_engine.Cycle}, Entities count: {entCount}");
+				Console.WriteLine($"	Births:	{stats.Births}");
+				Console.WriteLine($"	New relationships: {stats.NewRelationships}");
+				Console.WriteLine($"	New teens: {stats.AgingStats.NewTeens}");
+				Console.WriteLine($"	New adults: {stats.AgingStats.NewAdult}");
+				Console.WriteLine($"	New old(s): {stats.AgingStats.NewOld}");
+				Console.WriteLine($"	Deaths: {stats.AgingStats.Deaths}");
 			}
 		}
 	}

@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Core.Models;
 using SharedLibrary;
 using SharedLibrary.Enums;
 using SharedLibrary.Interfaces;
 using SharedLibrary.Interfaces.Entity;
 using SharedLibrary.Interfaces.Generator;
+using SharedLibrary.Interfaces.Statistics;
 
 namespace Core
 {
@@ -49,12 +51,10 @@ namespace Core
 			this.IsConfigurated = false;
 		}
 
-		public void MakeBabies()
+		public int MakeBabies()
 		{
 			var availableMothers = this.Entities.ChildrenMakeableFemales().ToList();
-			foreach (var mother in availableMothers) {
-				this.MakeBabies(mother);
-			}
+			return availableMothers.Sum(this.MakeBabies);
 		}
 
 		public void MakeBaby(TEntity parent)
@@ -80,44 +80,48 @@ namespace Core
 			this.Entities.Add(child);
 		}
 
-		public void MakeBabies(TEntity parent)
+		public int MakeBabies(TEntity parent)
 		{
 			this.CheckEntity(parent);
 			this.CheckEntity(parent.Partner);
-			this.MakeBabies(parent, parent.Partner);
+			return this.MakeBabies(parent, parent.Partner);
 		}
 
-		public void MakeBabies(TEntity father, TEntity mother)
+		public int MakeBabies(TEntity father, TEntity mother)
 		{
 			this.CheckEntity(father);
 			this.CheckEntity(mother);
 			if (father.Gender == Genders.Female && mother.Gender == Genders.Male) {
-				this.MakeBabies(mother, father);
-				return;
+				return this.MakeBabies(mother, father);
 			}
 			var count = this.NumberGenerator.GetChildrenCount(father.Pontency, mother.Pontency);
 			for (int i = 0; i < count; i++) {
 				this.MakeBaby(father, mother);
 			}
+			return count;
 		}
 
-		public void SetPartners()
+		public int SetPartners()
 		{
-			foreach (var entity in this.Entities.SingleEntities(Ages.Adolescence)) {
-				SetRandomPartner(entity);
-			}
+			return this.Entities.SingleEntities(Ages.Adolescence).Sum(SetRandomPartner);
 		}
 
-		public void NextCycle()
+		public ICycleStatistics NextCycle()
 		{
-			this.MakeBabies();
-			this.SetPartners();
-			this.GetOlder();
+			var births = this.MakeBabies();
+			var relations = this.SetPartners();
+			var ageStats = this.GetOlder();
 			this.Cycle++;
+
+			return new CycleStatistics(births, relations, ageStats);
 		}
 
-		public void GetOlder()
+		public IAgingStatistics GetOlder()
 		{
+			var newTeens = 0;
+			var newAdult = 0;
+			var newOld = 0;
+			var deaths = 0;
 			foreach (var entity in this.Entities.LivingEntities()) {
 				var minimum = this.NumberGenerator.GetRandomDouble(0, 0.9);
 				var shouldGetOlder = (entity.Age == Ages.Adulthood && entity.LastAge == Ages.Adulthood) ||
@@ -128,22 +132,28 @@ namespace Core
 				switch (entity.Age) {
 					case Ages.Childhood:
 						entity.Age = Ages.Adolescence;
+						newTeens++;
 						break;
 					case Ages.Adolescence:
 						entity.Age = Ages.Adulthood;
+						newAdult++;
 						break;
 					case Ages.Adulthood:
 						if (shouldGetOlder) {
 							entity.Age = Ages.OldAge;
+							newOld++;
 						}
 						break;
 					case Ages.OldAge:
 						this.Kill(entity);
+						deaths++;
 						break;
 					default:
 						throw new ArgumentOutOfRangeException();
 				}
 			}
+
+			return new AgingStatistics(newTeens, newAdult, newOld, deaths);
 		}
 
 		public void Kill(TEntity entity)
@@ -151,18 +161,19 @@ namespace Core
 			entity.DeathCycle = this.Cycle;
 		}
 
-		public void SetRandomPartner(TEntity original)
+		public int SetRandomPartner(TEntity original)
 		{
 			this.CheckEntity(original);
 			if (original.Partner != null) {
 				// Entity has a partner
-				return;
+				return 0;
 			}
 			var partner = this.GetPartner(original);
 			if (partner != null) {
 				partner.Partner = original;
 			}
 			original.Partner = partner;
+			return 1;
 		}
 
 		public TEntity GetPartner(TEntity original)
