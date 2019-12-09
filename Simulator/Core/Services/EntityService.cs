@@ -8,7 +8,7 @@ using SharedLibrary.Interfaces.Service;
 
 namespace Core.Services
 {
-	public class EntityService<TEntity> : BaseEngine, IEntityService<TEntity> where TEntity : class, IEntity<TEntity>
+	public class EntityService<TEntity> : BaseMethods, IEntityService<TEntity> where TEntity : class, IEntity<TEntity>
 	{
 		public bool AreSiblings(TEntity one, TEntity two)
 		{

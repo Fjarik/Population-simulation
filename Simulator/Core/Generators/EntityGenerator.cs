@@ -9,7 +9,7 @@ using SharedLibrary.Interfaces.Service;
 
 namespace Core.Generators
 {
-	public class EntityGenerator<TEntity> : BaseEngine, IEntityGenerator<TEntity>
+	public class EntityGenerator<TEntity> : BaseMethods, IEntityGenerator<TEntity>
 		where TEntity : class, IEntity<TEntity>, new()
 	{
 		private INumberGenerator NumberGenerator { get; }

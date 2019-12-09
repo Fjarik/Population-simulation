@@ -23,6 +23,11 @@ namespace SharedLibrary.Enums
 		SameGenerationOnly,
 
 		/// <summary>
+		/// The same age only
+		/// </summary>
+		SameAgeOnly,
+
+		/// <summary>
 		/// Allow random deaths
 		/// </summary>
 		RandomDeaths,

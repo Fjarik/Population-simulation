@@ -12,55 +12,10 @@ using SharedLibrary.Interfaces.Statistics;
 
 namespace Core
 {
-	public class Engine<TEntity> : BaseEngine, IEngine<TEntity> where TEntity : class, IEntity<TEntity>
+	public class Engine<TEntity> : BaseEngine<TEntity>, IEngine<TEntity> where TEntity : class, IEntity<TEntity>
 	{
-		private INumberGenerator NumberGenerator { get; }
-		private IEntityGenerator<TEntity> EntityGenerator { get; }
-
-		public List<TEntity> Entities { get; set; }
-		public IDictionary<SettingKeys, object> Settings { get; private set; }
-		public bool IsConfigurated { get; private set; }
-		public int Cycle { get; set; }
-
-		public bool CanContinue => this.Entities.LivingEntities().Any();
-
-		public Engine(INumberGenerator numberGenerator, IEntityGenerator<TEntity> entityGenerator)
-		{
-			this.NumberGenerator = numberGenerator;
-			this.EntityGenerator = entityGenerator;
-			this.Entities = new List<TEntity>();
-			this.Settings = new Dictionary<SettingKeys, object>();
-		}
-
-		public void Configurate(List<TEntity> entities)
-		{
-			if (this.IsConfigurated) {
-				throw new ArgumentOutOfRangeException(nameof(this.IsConfigurated),
-													  "Engine is already configurated. Use Reset() first.");
-			}
-
-			this.Entities = entities;
-
-			this.Settings.Add(SettingKeys.AllowIncest, true);
-			this.Settings.Add(SettingKeys.MinRelationDegree, 1);
-			this.Settings.Add(SettingKeys.SameGenerationOnly, true);
-			this.Settings.Add(SettingKeys.RandomDeaths, true);
-
-			this.IsConfigurated = true;
-		}
-
-		public void Reset()
-		{
-			if (!this.IsConfigurated) {
-				throw new ArgumentOutOfRangeException(nameof(this.IsConfigurated), "Engine is not configurated");
-			}
-
-			this.Entities.Clear();
-			this.Settings.Clear();
-			this.Cycle = 0;
-
-			this.IsConfigurated = false;
-		}
+		public Engine(INumberGenerator numberGenerator, IEntityGenerator<TEntity> entityGenerator) :
+			base(numberGenerator, entityGenerator) { }
 
 		public int MakeBabies()
 		{
@@ -73,22 +28,6 @@ namespace Core
 			this.CheckEntity(parent);
 			this.CheckEntity(parent.Partner);
 			this.MakeBaby(parent, parent.Partner);
-		}
-
-		public void MakeBaby(TEntity father, TEntity mother)
-		{
-			this.CheckEntity(father);
-			this.CheckEntity(mother);
-			if (father.Gender != Genders.Male) {
-				throw new InvalidCastException("Father has wrong gender");
-			}
-			if (mother.Gender != Genders.Female) {
-				throw new InvalidCastException("Mother has wrong gender");
-			}
-			var child = this.EntityGenerator.GenerateBaby(father, mother, this.Cycle);
-			this.CheckEntity(child);
-
-			this.Entities.Add(child);
 		}
 
 		public int MakeBabies(TEntity parent)
@@ -120,6 +59,7 @@ namespace Core
 		public ICycleStatistics NextCycle()
 		{
 			if (!this.CanContinue) {
+				this.Log("Engine cannot continue - No living entities");
 				return new CycleStatistics();
 			}
 
@@ -128,6 +68,7 @@ namespace Core
 			var ageStats = this.GetOlder();
 			this.Cycle++;
 
+			this.Log($"Cycle no. {this.Cycle} done");
 			return new CycleStatistics(births, relations, ageStats);
 		}
 
@@ -174,11 +115,6 @@ namespace Core
 			return new AgingStatistics(newTeens, newAdult, newOld, deaths);
 		}
 
-		public void Kill(TEntity entity)
-		{
-			entity.DeathCycle = this.Cycle;
-		}
-
 		public int SetRandomPartner(TEntity original)
 		{
 			this.CheckEntity(original);
@@ -186,7 +122,10 @@ namespace Core
 				// Entity has a partner
 				return 0;
 			}
-			var partner = this.GetPartner(original);
+
+			var sameGenOnly = this.GetSetting(SettingKeys.SameGenerationOnly, true);
+
+			var partner = this.GetPartner(original, sameGenOnly);
 			if (partner != null) {
 				partner.Partner = original;
 			}
@@ -194,17 +133,21 @@ namespace Core
 			return 1;
 		}
 
-		public TEntity GetPartner(TEntity original)
+		public TEntity GetPartner(TEntity original, bool sameGeneration)
 		{
 			this.CheckEntity(original);
 			var minimalAtrac = this.NumberGenerator.GetRandomDouble();
+			var query = this.Entities
+							.SingleEntities();
+			if (sameGeneration) {
+				query = query.Where(x => x.Generation == original.Generation);
+			}
+
 			if (original.Attractiveness >= minimalAtrac) {
-				return this.Entities
-						   .SingleEntities()
-						   .FirstOrDefault(x => x.Generation == original.Generation &&
-												x.Age == original.Age &&
-												x.Gender != original.Gender &&
-												x.Attractiveness >= minimalAtrac);
+				return query
+					.FirstOrDefault(x => x.Age == original.Age &&
+										 x.Gender != original.Gender &&
+										 x.Attractiveness >= minimalAtrac);
 			}
 			return null;
 		}

@@ -171,11 +171,12 @@ namespace Test
 		[TestCase(5)]
 		public void NextTest(int startCount)
 		{
-			var cycles = 50;
+			var cycles = 10;
 
 			_engine.Reset();
 			var ent = _generator.GetSuperEntities(startCount, Ages.Childhood).ToList();
 			_engine.Configurate(ent);
+			_engine.ToggleLogging();
 
 			for (int i = 0; i < cycles; i++) {
 				Assert.AreEqual(i, _engine.Cycle);
@@ -188,6 +189,7 @@ namespace Test
 
 				var entCount = _engine.Entities.Count;
 				var aliveCount = _engine.Entities.LivingEntities().Count();
+				Console.WriteLine("===========Statistics===========");
 				Console.WriteLine($"Cycle no. {_engine.Cycle}, Entities count: {entCount} (Alive: {aliveCount})");
 				Console.WriteLine($"	Births:	{stats.Births}");
 				Console.WriteLine($"	New relationships: {stats.NewRelationships}");
@@ -195,6 +197,7 @@ namespace Test
 				Console.WriteLine($"	New adults: {stats.AgingStats.NewAdult}");
 				Console.WriteLine($"	New old(s): {stats.AgingStats.NewOld}");
 				Console.WriteLine($"	Deaths: {stats.AgingStats.Deaths}");
+				Console.WriteLine("================================");
 			}
 		}
 	}
