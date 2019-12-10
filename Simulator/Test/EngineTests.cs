@@ -27,9 +27,9 @@ namespace Test
 			var numberGen = new NumberGenerator();
 			_entityService = new EntityService<Entity>();
 
-			IEntityGenerator<Entity> entityGenerator = new EntityGenerator<Entity>(numberGen, _entityService);
+			var entityGenerator = new EntityGenerator<Entity>(numberGen, _entityService);
 			_generator = new StartGenerator(numberGen, entityGenerator);
-			_engine = new Engine<Entity>(numberGen, entityGenerator);
+			_engine = new Engine<Entity>(numberGen, entityGenerator, _entityService);
 
 			var ent = _generator.GetRandomEntities(7).ToList();
 			_engine.Configurate(ent);
@@ -146,7 +146,7 @@ namespace Test
 		{
 			var count = 10;
 			for (int i = 0; i < count; i++) {
-				var cycles = 20;
+				var cycles = 5;
 
 				_engine.Reset();
 				var ent = _generator.GetSuperEntities(5, Ages.Childhood).ToList();
@@ -166,13 +166,12 @@ namespace Test
 
 		[Test]
 		[TestCase(2)]
+		[TestCase(2, 20)]
 		[TestCase(3)]
 		[TestCase(4)]
 		[TestCase(5)]
-		public void NextTest(int startCount)
+		public void NextTest(int startCount, int cycles = 10)
 		{
-			var cycles = 10;
-
 			_engine.Reset();
 			var ent = _generator.GetSuperEntities(startCount, Ages.Childhood).ToList();
 			_engine.Configurate(ent);

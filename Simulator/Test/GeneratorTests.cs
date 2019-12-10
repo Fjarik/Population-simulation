@@ -53,7 +53,7 @@ namespace Test
 			Assert.IsNotNull(first);
 
 			Assert.AreEqual(0, first.Generation);
-			Assert.AreEqual(0, first.BornCycle);
+			Assert.AreEqual(-1, first.BornCycle);
 
 			Assert.AreEqual(0.5, first.Degeneration, 0.5);
 
@@ -91,7 +91,7 @@ namespace Test
 			Assert.IsNotNull(first);
 
 			Assert.AreEqual(0, first.Generation);
-			Assert.AreEqual(0, first.BornCycle);
+			Assert.AreEqual(-1, first.BornCycle);
 
 			Assert.AreEqual(0, first.Degeneration);
 

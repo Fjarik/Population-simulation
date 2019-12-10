@@ -8,14 +8,18 @@ using SharedLibrary.Enums;
 using SharedLibrary.Interfaces;
 using SharedLibrary.Interfaces.Entity;
 using SharedLibrary.Interfaces.Generator;
+using SharedLibrary.Interfaces.Service;
 using SharedLibrary.Interfaces.Statistics;
 
 namespace Core
 {
 	public class Engine<TEntity> : BaseEngine<TEntity>, IEngine<TEntity> where TEntity : class, IEntity<TEntity>
 	{
-		public Engine(INumberGenerator numberGenerator, IEntityGenerator<TEntity> entityGenerator) :
-			base(numberGenerator, entityGenerator) { }
+		public Engine(INumberGenerator numberGenerator,
+					  IEntityGenerator<TEntity> entityGenerator,
+					  IEntityService<TEntity> entityService) : base(numberGenerator,
+																	entityGenerator,
+																	entityService) { }
 
 		public int MakeBabies()
 		{
@@ -133,9 +137,15 @@ namespace Core
 			return 1;
 		}
 
-		public TEntity GetPartner(TEntity original, bool sameGeneration)
+		public TEntity GetPartner(TEntity original, bool sameGeneration, bool notRelated = false, int tryNo = 1)
 		{
 			this.CheckEntity(original);
+
+			// Max 3 tries to find a partner
+			if (tryNo > 3) {
+				return null;
+			}
+
 			var minimalAtrac = this.NumberGenerator.GetRandomDouble();
 			var query = this.Entities
 							.SingleEntities();
@@ -143,13 +153,22 @@ namespace Core
 				query = query.Where(x => x.Generation == original.Generation);
 			}
 
-			if (original.Attractiveness >= minimalAtrac) {
-				return query
-					.FirstOrDefault(x => x.Age == original.Age &&
-										 x.Gender != original.Gender &&
-										 x.Attractiveness >= minimalAtrac);
+			if (original.Attractiveness < minimalAtrac) {
+				return null;
 			}
-			return null;
+			var partner = query.FirstOrDefault(x => x.Age == original.Age &&
+													x.Gender != original.Gender &&
+													x.Attractiveness >= minimalAtrac);
+
+			if (partner == null) {
+				return null;
+			}
+			if (notRelated && this.EntityService.AreConnected(original, partner)) {
+				// TODO: Check
+				return this.GetPartner(original, sameGeneration, true, tryNo + 1);
+			}
+
+			return partner;
 		}
 	}
 }

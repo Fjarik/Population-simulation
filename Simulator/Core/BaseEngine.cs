@@ -7,6 +7,7 @@ using SharedLibrary;
 using SharedLibrary.Enums;
 using SharedLibrary.Interfaces.Entity;
 using SharedLibrary.Interfaces.Generator;
+using SharedLibrary.Interfaces.Service;
 
 namespace Core
 {
@@ -14,6 +15,7 @@ namespace Core
 	{
 		public INumberGenerator NumberGenerator { get; }
 		public IEntityGenerator<TEntity> EntityGenerator { get; }
+		public IEntityService<TEntity> EntityService { get; set; }
 
 		private List<TEntity> _entities { get; set; }
 
@@ -28,10 +30,13 @@ namespace Core
 		public bool LoggingEnabled { get; private set; }
 		public bool CanContinue => this.Entities.LivingEntities().Any();
 
-		protected BaseEngine(INumberGenerator numberGenerator, IEntityGenerator<TEntity> entityGenerator)
+		protected BaseEngine(INumberGenerator numberGenerator,
+							 IEntityGenerator<TEntity> entityGenerator,
+							 IEntityService<TEntity> entityService)
 		{
 			this.NumberGenerator = numberGenerator;
 			this.EntityGenerator = entityGenerator;
+			this.EntityService = entityService;
 			this._entities = new List<TEntity>();
 			this._settings = new Dictionary<SettingKeys, object>();
 		}

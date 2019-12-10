@@ -70,7 +70,7 @@ namespace Core.Generators
 			return new TEntity {
 				Id = Guid.NewGuid(),
 				Age = age ?? Ages.Childhood,
-				BornCycle = 0,
+				BornCycle = -1,
 				Degeneration = 0,
 				Generation = 0,
 				Gender = this.GetRandomGender(),
