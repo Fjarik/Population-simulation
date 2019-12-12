@@ -37,6 +37,9 @@ namespace Core.Services
 
 		public IEnumerable<TEntity> GetLowestCommonAncestors(TEntity one, TEntity two)
 		{
+			this.CheckEntity(one, false);
+			this.CheckEntity(two, false);
+
 			if (this.AreSiblings(one, two)) {
 				return new[] {one.Father, one.Mother};
 			}
@@ -56,12 +59,44 @@ namespace Core.Services
 			return lca;
 		}
 
-		public double GetConnectionRate(TEntity current, TEntity ancestor)
+		public int GetRelationDegree(TEntity one, TEntity two)
 		{
-			this.CheckEntity(current, false);
-			this.CheckEntity(ancestor, false);
+			this.CheckEntity(one, false);
+			this.CheckEntity(two, false);
 
-			throw new NotImplementedException();
+			var ancestor = this.GetLowestCommonAncestors(one, two).FirstOrDefault();
+			if (ancestor == null) {
+				return 0;
+			}
+
+			return this.GetRelationDegree(one.Generation, two.Generation, ancestor.Generation);
+		}
+
+		public int GetRelationDegree(int genOne, int genTwo, int genAncestor)
+		{
+			if (genOne == genAncestor || genTwo == genAncestor) {
+				throw new ArgumentOutOfRangeException(nameof(genAncestor), "Ancestor cannot be same generation");
+			}
+
+			if (genOne == genTwo) {
+				return this.GetRelationDegree(genOne, genAncestor);
+			}
+
+			return (genOne + genTwo) - 2 * genAncestor - 1;
+		}
+
+		public int GetRelationDegree(int genChild, int genAncestor)
+		{
+			if (genChild == genAncestor) {
+				throw new ArgumentOutOfRangeException(nameof(genAncestor), "Ancestor cannot be same generation");
+			}
+
+			if (genChild < genAncestor) {
+				// Child (3) < Ancestor (5) -> Switch variables
+				return this.GetRelationDegree(genAncestor, genChild);
+			}
+
+			return 2 * (genChild - genAncestor) - 1;
 		}
 
 		public double GetDegradation(TEntity mother, TEntity father)

@@ -52,8 +52,7 @@ namespace Core
 
 			this._entities = entities;
 
-			this._settings.Add(SettingKeys.AllowIncest, true);
-			this._settings.Add(SettingKeys.MinRelationDegree, 1);
+			this._settings.Add(SettingKeys.MinRelationDegree, 3);
 			this._settings.Add(SettingKeys.SameAgeOnly, true);
 			this._settings.Add(SettingKeys.SameGenerationOnly, true);
 			this._settings.Add(SettingKeys.RandomDeaths, true);

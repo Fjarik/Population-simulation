@@ -128,8 +128,9 @@ namespace Core
 			}
 
 			var sameGenOnly = this.GetSetting(SettingKeys.SameGenerationOnly, true);
+			var min = this.GetSetting(SettingKeys.MinRelationDegree, 3);
 
-			var partner = this.GetPartner(original, sameGenOnly);
+			var partner = this.GetPartner(original, sameGenOnly, min);
 			if (partner != null) {
 				partner.Partner = original;
 			}
@@ -137,12 +138,12 @@ namespace Core
 			return 1;
 		}
 
-		public TEntity GetPartner(TEntity original, bool sameGeneration, bool notRelated = false, int tryNo = 1)
+		public TEntity GetPartner(TEntity original, bool sameGeneration, int minDegree = 3, int tryNo = 1)
 		{
 			this.CheckEntity(original);
 
 			// Max 3 tries to find a partner
-			if (tryNo > 3) {
+			if (tryNo < 1 || tryNo > 3) {
 				return null;
 			}
 
@@ -156,19 +157,33 @@ namespace Core
 			if (original.Attractiveness < minimalAtrac) {
 				return null;
 			}
-			var partner = query.FirstOrDefault(x => x.Age == original.Age &&
-													x.Gender != original.Gender &&
-													x.Attractiveness >= minimalAtrac);
+			var partner = query.Where(x => x.Age == original.Age &&
+										   x.Gender != original.Gender &&
+										   x.Attractiveness >= minimalAtrac)
+							   .Skip(tryNo - 1)
+							   .FirstOrDefault();
 
 			if (partner == null) {
 				return null;
 			}
-			if (notRelated && this.EntityService.AreConnected(original, partner)) {
-				// TODO: Check
-				return this.GetPartner(original, sameGeneration, true, tryNo + 1);
+
+			if (minDegree < 1) {
+				// Close relatives are accepted (Degree = 0)
+				return partner;
 			}
 
-			return partner;
+			if (!this.EntityService.AreConnected(original, partner)) {
+				// Original & Partner are NOT connected
+				return partner;
+			}
+
+			var actualDegree = this.EntityService.GetRelationDegree(original, partner);
+			if (actualDegree >= minDegree) {
+				// Cousin (3), Min degree (3) -> 3 >= 3 -> True -> Allowed
+				return partner;
+			}
+			// Find new
+			return this.GetPartner(original, sameGeneration, minDegree, tryNo + 1);
 		}
 	}
 }

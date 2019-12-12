@@ -117,8 +117,10 @@ namespace Test
 		{
 			_engine.Reset();
 
-			var ent = _generator.GetRandomEntities(7).ToList();
+			var ent = _generator.GetSuperEntities(7).ToList();
 			_engine.Configurate(ent);
+
+			// _engine.SetSetting(SettingKeys.MinRelationDegree, 0);
 
 			var cycles = 10;
 			for (int i = 0; i < cycles; i++) {
